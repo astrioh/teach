@@ -4,24 +4,37 @@ const cors = require('cors');
 const db = require('./models');
 const { ROLES } = require('./utils/constants');
 
+const bcrypt = require('bcryptjs');
+
 const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
+});
 
 app.use(
   cors({
-    origin: 'http://localhost:8081',
+    origin: 'http://localhost:3000',
   }),
 );
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello JWT Auth' });
-});
+// ROUTES
 require('./routes/auth.routes')(app);
 
+// SOCKET
+io.on('connection', (socket) => {
+  require('./sockets/conference.sockets')(socket);
+});
+
+// START SERVER
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, async () => {
+server.listen(PORT, async () => {
   console.log(`Server is running at http://localhost:${PORT}`);
   try {
     await db.sequelize.authenticate();
@@ -33,10 +46,7 @@ app.listen(PORT, async () => {
 
 const Role = db.role;
 
-db.sequelize.sync({ force: true }).then(() => {
-  console.log('Drop and Resync Db');
-  initial();
-});
+db.sequelize.sync();
 
 function initial() {
   Role.create({
@@ -48,4 +58,17 @@ function initial() {
     id: ROLES.TEACHER,
     name: 'Учитель',
   });
+
+  db.user
+    .create({
+      fullName: 'Буцких Илья Александрович',
+      email: 'Email',
+      password: bcrypt.hashSync('111111', 8),
+      bio: '',
+    })
+    .then((user) => {
+      Role.findAll().then((roles) => {
+        user.setRole(roles[0]);
+      });
+    });
 }
