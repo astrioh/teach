@@ -26,6 +26,12 @@ app.use(express.urlencoded({ extended: true }));
 
 // ROUTES
 require('./routes/auth.routes')(app);
+app.use(
+  '/peerjs',
+  require('peer').ExpressPeerServer(server, {
+    debug: true,
+  }),
+);
 
 // SOCKET
 io.on('connection', (socket) => {
