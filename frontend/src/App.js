@@ -1,16 +1,15 @@
 import { Button } from '@chakra-ui/react';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 
 import RequireAuth from './components/RequireAuth';
 import { COLORS } from './constants';
-import { useSocket } from './hooks/useSocket';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
+import RoomPage from './pages/RoomPage';
 
 function App() {
   const navigate = useNavigate();
-  const socket = useSocket();
 
   return (
     <Routes>
@@ -36,7 +35,7 @@ function App() {
       />
       <Route exact path='/login' element={<LoginPage />} />
       <Route exact path='/profile' element={<ProfilePage />} />
-      <Route exact path='/room/:id' element={<div>Hek</div>} />
+      <Route exact path='/room/:id' element={<RoomPage />} />
     </Routes>
   );
 }

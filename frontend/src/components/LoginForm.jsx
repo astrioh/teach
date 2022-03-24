@@ -1,10 +1,10 @@
 import React from 'react';
 import { useState } from 'react';
 import { FormControl, FormLabel, Flex, Button, Input } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 import { COLORS } from '../constants';
-import { useAuth } from '../hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
 const LoginForm = (props) => {
   const [email, setEmail] = useState('');

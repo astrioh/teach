@@ -1,6 +1,6 @@
 import { Box, Heading } from '@chakra-ui/react';
 import React from 'react';
-import { useAuth } from '../hooks/useAuth';
+import useAuth from '../hooks/useAuth';
 
 const ProfilePage = () => {
   const auth = useAuth();
@@ -27,4 +27,5 @@ const ProfilePage = () => {
     </Box>
   );
 };
+
 export default ProfilePage;
