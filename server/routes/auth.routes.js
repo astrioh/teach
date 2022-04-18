@@ -10,7 +10,7 @@ module.exports = function (app) {
   });
   app.post(
     '/api/auth/signup',
-    [verifySignUp.checkDuplicateEmail],
+    [verifySignUp.checkDuplicateEmail, verifySignUp.checkPasswordMatching],
     controller.signUp,
   );
   app.post('/api/auth/signin', controller.signIn);

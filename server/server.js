@@ -8,10 +8,9 @@ const bcrypt = require('bcryptjs');
 
 const app = express();
 const server = require('http').createServer(app);
-const io = require('socket.io')(server, {
+const io = require('socket.io')({
   cors: {
     origin: 'http://localhost:3000',
-    methods: ['GET', 'POST'],
   },
 });
 
@@ -26,6 +25,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // ROUTES
 require('./routes/auth.routes')(app);
+require('./routes/teachers.routes')(app);
+require('./routes/students.routes')(app);
 app.use(
   '/peerjs',
   require('peer').ExpressPeerServer(server, {
@@ -34,9 +35,15 @@ app.use(
 );
 
 // SOCKET
-io.on('connection', (socket) => {
-  require('./sockets/conference.sockets')(socket);
-});
+try {
+  io.listen(4000);
+  io.on('connection', (socket) => {
+    console.log('SOCKET CONNECT');
+    require('./sockets/conference.sockets')(io, socket);
+  });
+} catch (e) {
+  console.log(e);
+}
 
 // START SERVER
 const PORT = process.env.PORT || 8080;
@@ -62,7 +69,7 @@ function initial() {
 
   Role.create({
     id: ROLES.TEACHER,
-    name: 'Учитель',
+    name: 'Репетитор',
   });
 
   db.user

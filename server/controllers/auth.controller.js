@@ -1,11 +1,7 @@
 const db = require('../models');
 const config = require('../config/auth.config');
-const { ROLES } = require('../utils/constants');
 
 const User = db.user;
-const Role = db.role;
-
-const Op = db.Sequelize.Op;
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -16,25 +12,23 @@ exports.signUp = (req, res) => {
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 8),
     bio: req.body.bio || null,
+    roleId: req.body.roleId,
   })
     .then((user) => {
-      if (req.body.role) {
-        Role.findOne({
-          where: {
-            id: {
-              [Op.or]: req.body.role,
-            },
-          },
-        }).then((role) => {
-          user.setRole(role).then(() => {
-            res.send({ message: 'User was registered successfully' });
-          });
+      user.getRole().then((role) => {
+        let token = jwt.sign({ id: user.id }, config.secret, {
+          expiresIn: 86400, // 24 hours
         });
-      } else {
-        user.setRoles([ROLES.STUDENT]).then(() => {
-          res.send({ message: 'User was registered successfully' });
+
+        res.status(200).send({
+          id: user.id,
+          fullName: user.fullName,
+          email: user.email,
+          bio: user.bio,
+          role: role,
+          accessToken: token,
         });
-      }
+      });
     })
     .catch((err) => res.status(500).send({ message: err.message }));
 };
