@@ -1,9 +1,9 @@
 import React from 'react';
 import { Heading, Flex, Box } from '@chakra-ui/react';
 
-import LoginForm from '../components/LoginForm';
+import RegisterForm from '../components/RegisterForm';
 
-const LoginPage = () => {
+const RegisterPage = () => {
   return (
     <Flex
       width='100%'
@@ -22,14 +22,14 @@ const LoginPage = () => {
         }
       >
         <Box textAlign='center'>
-          <Heading fontSize='30px'>Вход в Teach</Heading>
+          <Heading fontSize='30px'>Регистрация в Teach</Heading>
         </Box>
         <Box my={4} marginTop='35px' w='100%'>
-          <LoginForm />
+          <RegisterForm />
         </Box>
       </Box>
     </Flex>
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

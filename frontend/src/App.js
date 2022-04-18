@@ -1,41 +1,37 @@
-import { Button } from '@chakra-ui/react';
+import { Stack } from '@chakra-ui/react';
 import React from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
+import Menu from './components/Menu/Menu';
+import PageLayout from './components/PageLayout';
 
 import RequireAuth from './components/RequireAuth';
-import { COLORS } from './constants';
+import { ROLES } from './constants';
 import LoginPage from './pages/LoginPage';
-import ProfilePage from './pages/ProfilePage';
+import RegisterPage from './pages/RegisterPage';
 import RoomPage from './pages/RoomPage';
+import TeachersPage from './pages/TeachersPage';
 
 function App() {
-  const navigate = useNavigate();
-
   return (
     <Routes>
-      <Route
-        exact
-        path='/'
-        element={
-          <RequireAuth>
-            <h1>Home</h1>
-            {
-              <Button
-                colorScheme={COLORS.DEFAULT_COLOR_SCHEME}
-                mt='5'
-                onClick={() => {
-                  navigate('/room/1234');
-                }}
-              >
-                Подключиться
-              </Button>
-            }
-          </RequireAuth>
-        }
-      />
       <Route exact path='/login' element={<LoginPage />} />
-      <Route exact path='/profile' element={<ProfilePage />} />
-      <Route exact path='/room/:id' element={<RoomPage />} />
+      <Route exact path='/register' element={<RegisterPage />} />
+
+      <Route element={<RequireAuth roles={[ROLES.STUDENT, ROLES.TEACHER]} />}>
+        <Route element={<PageLayout />}>
+          <Route exact path='/' element={<h1>Home</h1>} />
+          <Route
+            exact
+            path='/teachers'
+            element={
+              <RequireAuth roles={[ROLES.STUDENT]}>
+                <TeachersPage />
+              </RequireAuth>
+            }
+          />
+          <Route exact path='/room/:roomId' element={<RoomPage />} />
+        </Route>
+      </Route>
     </Routes>
   );
 }

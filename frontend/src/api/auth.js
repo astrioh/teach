@@ -1,17 +1,25 @@
 import axios from 'axios';
 import { API_URL } from '../constants';
 
-const register = (username, email, password) => {
-  return axios.post(API_URL + 'signup', {
-    username,
-    email,
-    password,
+/**
+ *
+ * @param {Object} userData Параметры регистрации
+ * @param {String} userData.fullName
+ * @param {String} userData.email
+ * @param {String} userData.password
+ * @param {String} userData.repeatPassword
+ * @param {Text} userData.bio
+ * @param {Int} userData.roleId
+ */
+const signUp = (userData) => {
+  return axios.post(API_URL + 'auth/signup', userData).then((response) => {
+    return response.data;
   });
 };
 
-const login = (email, password) => {
+const signIn = (email, password) => {
   return axios
-    .post(API_URL + 'signin', {
+    .post(API_URL + 'auth/signin', {
       email,
       password,
     })
@@ -21,8 +29,8 @@ const login = (email, password) => {
 };
 
 const auth = {
-  register,
-  login,
+  signIn,
+  signUp,
 };
 
 export default auth;

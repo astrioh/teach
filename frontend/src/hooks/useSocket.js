@@ -1,52 +1,50 @@
-import { useState, useEffect } from 'react';
-import { io } from 'socket.io-client';
+import { useState, useEffect, createContext, useRef } from 'react';
+import io from 'socket.io-client';
 
+const socketURL = 'http://localhost:4000';
 // TODO: Move socket emit logic into api.js, change event names into constants
 const useSocket = () => {
+  console.log('init');
+
   const [socket, setSocket] = useState(null);
   const [connectedPeers, setConnectedPeers] = useState([]);
-  const socketURL = 'ws://localhost:8080';
+
+  useEffect(() => {
+    const newSocket = io(socketURL);
+    console.log(socket, newSocket);
+    setSocket(newSocket);
+    newSocket.on('connect', () => {
+      console.log('connected');
+    });
+
+    newSocket.on('disconnect', () => {
+      console.log('disconnected');
+      cleanUp();
+    });
+
+    newSocket.on('allMembers', (peersData) => {
+      setConnectedPeers(peersData);
+    });
+
+    newSocket.on('updateMembers', () => {
+      newSocket.emit('allMembers');
+    });
+    return () => newSocket.close();
+  }, [setSocket]);
 
   const cleanUp = () => {
     setConnectedPeers([]);
   };
 
-  const connect = (peerId) => {
-    socket.emit('join_room', peerId);
+  const connect = (name, room, peerId) => {
+    console.log('emit join');
+    socket.emit('joinRoom', name, room, peerId);
   };
 
   const disconnect = (peerId) => {
-    socket.emit('disconnect', peerId);
+    console.log('emit disconnect');
+    socket.emit('disconnected', peerId);
   };
-
-  useEffect(() => {
-    const ws = socket ? socket : io(socketURL);
-
-    setSocket(ws);
-
-    ws.on('connect', () => {
-      console.log('connected');
-      ws.emit('peers');
-    });
-
-    ws.on('disconnect', () => {
-      console.log('disconnected');
-      cleanUp();
-    });
-
-    ws.on('peers', (peersData) => {
-      setConnectedPeers(peersData);
-    });
-
-    ws.on('updatePeers', () => {
-      ws.emit('peers');
-    });
-
-    return () => {
-      ws.disconnect();
-      cleanUp();
-    };
-  }, [socket]);
 
   return { socket, connectedPeers, connect, disconnect };
 };

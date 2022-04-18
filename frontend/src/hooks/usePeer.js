@@ -37,6 +37,7 @@ function usePeer(addRemoteStream, removeRemoteStream) {
           config: {
             iceServers: iceServers,
           },
+          secure: false,
         });
 
     peer.on('open', () => {

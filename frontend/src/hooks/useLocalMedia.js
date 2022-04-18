@@ -29,7 +29,7 @@ const useLocalMedia = () => {
         });
       };
     }
-  }, [mediaStream]);
+  }, [setMediaStream]);
 
   return mediaStream;
 };
