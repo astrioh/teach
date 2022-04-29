@@ -1,6 +1,7 @@
 export const COLORS = {
   DEFAULT_COLOR_SCHEME: 'teal',
   GRAY: '#818181',
+  ACTIVE_LINK_BACKGROUND: '#718096',
 };
 
 export const ROLES = {

@@ -6,8 +6,7 @@ import NotFound from '../pages/NotFound';
 const RequireAuth = ({ children, roles }) => {
   let auth = useAuth();
 
-  const userHasRequiredRole =
-    auth.user && roles.includes(auth.user.role.id) ? true : false;
+  const userHasRequiredRole = auth.user && roles.includes(auth.user.role.id);
 
   if (!auth.user) {
     return <Navigate to='/login' />;

@@ -1,20 +1,31 @@
-import { Box, Flex, Heading, VStack } from '@chakra-ui/react';
-import axios from 'axios';
-import React, { useEffect } from 'react';
-import SearchBar from '../components/SearchBar';
-import { API_URL } from '../constants';
+import { Box, Flex, Heading, StackDivider, VStack } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+
+import students from '../api/students';
+import Teacher from '../components/Teacher';
+import useAuth from '../hooks/useAuth';
 
 const TeachersPage = () => {
+  const [teachers, setTeachers] = useState([]);
+
+  const auth = useAuth();
+
   useEffect(() => {
-    axios.get(API_URL + '');
-  }, []);
+    students.getStudentTeachers(auth.user.id).then((teachersData) => {
+      setTeachers(teachersData);
+    });
+  }, [auth.user.id]);
 
   return (
     <Flex direction='column' alignItems='flex-start'>
       <Heading>Репетиторы</Heading>
-      {/* <Box width='510px' marginTop='30px'>
-        <SearchBar />
-      </Box> */}
+      <Box marginTop='80px' w='100%'>
+        <VStack w='100%' divider={<StackDivider />}>
+          {teachers.map((teacher) => (
+            <Teacher key={teacher.id} teacher={teacher} />
+          ))}
+        </VStack>
+      </Box>
     </Flex>
   );
 };
