@@ -62,26 +62,30 @@ const Role = db.role;
 db.sequelize.sync();
 
 function initial() {
-  Role.create({
-    id: ROLES.STUDENT,
-    name: 'Ученик',
-  });
+  // Role.create({
+  //   id: ROLES.STUDENT,
+  //   name: 'Ученик',
+  // });
 
-  Role.create({
-    id: ROLES.TEACHER,
-    name: 'Репетитор',
-  });
+  // Role.create({
+  //   id: ROLES.TEACHER,
+  //   name: 'Репетитор',
+  // });
 
-  db.user
-    .create({
-      fullName: 'Буцких Илья Александрович',
-      email: 'Email',
-      password: bcrypt.hashSync('111111', 8),
-      bio: '',
-    })
-    .then((user) => {
-      Role.findAll().then((roles) => {
-        user.setRole(roles[0]);
-      });
-    });
+  // db.user
+  //   .create({
+  //     fullName: 'Буцких Илья Александрович',
+  //     email: 'Email',
+  //     password: bcrypt.hashSync('111111', 8),
+  //     bio: '',
+  //   })
+  //   .then((user) => {
+  //     Role.findAll().then((roles) => {
+  //       user.setRole(roles[0]);
+  //     });
+  //   });
+  db.teachersStudents.create({
+    studentId: 4,
+    teacherId: 3,
+  });
 }

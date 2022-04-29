@@ -7,5 +7,6 @@ module.exports = function (app) {
     );
     next();
   });
-  app.get('/api/students', controller.getStudents);
+  app.get('/api/students', controller.getAllStudents);
+  app.get('/api/students/:id/teachers', controller.getStudentTeachers);
 };

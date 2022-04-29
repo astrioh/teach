@@ -13,6 +13,7 @@ const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
     idle: config.pool.idle,
   },
   logQueryParameters: true,
+  logging: console.log,
 });
 
 const db = {};
@@ -30,6 +31,22 @@ db.role.hasMany(db.user, { as: 'users' });
 db.user.belongsTo(db.role, {
   foreignKey: 'roleId',
   as: 'role',
+});
+
+db.teachersStudents = require('./teachers_students.model.js')(
+  sequelize,
+  Sequelize,
+);
+
+db.user.belongsToMany(db.user, {
+  through: db.teachersStudents,
+  foreignKey: 'studentId',
+  as: 'teachers',
+});
+db.user.belongsToMany(db.user, {
+  through: db.teachersStudents,
+  foreignKey: 'teacherId',
+  as: 'students',
 });
 
 module.exports = db;
