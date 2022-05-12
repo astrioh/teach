@@ -10,7 +10,7 @@ const getTeachersStudents = (teacherId) => {
 };
 
 const addStudent = (studentId, teacherId) => {
-  return axios.post(`${API_URL}teachers/add_student`, {
+  return axios.post(`${API_URL}teachers/add-student`, {
     studentId,
     teacherId,
   });

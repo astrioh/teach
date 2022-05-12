@@ -38,7 +38,7 @@ const StudentsPage = () => {
         <Button
           colorScheme={COLORS.DEFAULT_COLOR_SCHEME}
           color='white'
-          onClick={() => navigate('/add_student')}
+          onClick={() => navigate('/students/add-student')}
         >
           Добавить ученика
         </Button>

@@ -40,8 +40,6 @@ const RegisterForm = () => {
   };
 
   const handleRoleChange = (value) => {
-    console.log(value);
-    console.log(ROLES);
     setInputs((prevState) => ({
       ...prevState,
       role: Number.parseInt(value),
