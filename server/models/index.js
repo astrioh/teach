@@ -31,6 +31,7 @@ db.role.hasMany(db.user, { as: 'users' });
 db.user.belongsTo(db.role, {
   foreignKey: 'roleId',
   as: 'role',
+  onDelete: 'CASCADE',
 });
 
 db.teachersStudents = require('./teachers_students.model.js')(
@@ -42,11 +43,42 @@ db.user.belongsToMany(db.user, {
   through: db.teachersStudents,
   foreignKey: 'studentId',
   as: 'teachers',
+  onDelete: 'CASCADE',
 });
 db.user.belongsToMany(db.user, {
   through: db.teachersStudents,
   foreignKey: 'teacherId',
   as: 'students',
+  onDelete: 'CASCADE',
+});
+
+/**
+ *  Занятия
+ */
+
+db.lesson = require('./lesson.model.js')(sequelize, Sequelize);
+db.user.hasMany(db.lesson);
+db.lesson.belongsTo(db.user, {
+  foreignKey: 'userId',
+  as: 'creator',
+  onDelete: 'CASCADE',
+});
+
+db.studentsLessons = require('./students_lessons.model.js')(
+  sequelize,
+  Sequelize,
+);
+db.user.belongsToMany(db.lesson, {
+  through: db.studentsLessons,
+  foreignKey: 'studentId',
+  as: 'lesson',
+  onDelete: 'CASCADE',
+});
+db.lesson.belongsToMany(db.user, {
+  through: db.studentsLessons,
+  foreignKey: 'lessonId',
+  as: 'students',
+  onDelete: 'CASCADE',
 });
 
 module.exports = db;

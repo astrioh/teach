@@ -9,5 +9,5 @@ module.exports = function (app) {
   });
   app.get('/api/teachers', controller.getAllTeachers);
   app.get('/api/teachers/:id/students', controller.getTeachersStudents);
-  app.post('/api/teachers/add_student', controller.addStudent);
+  app.post('/api/teachers/add-student', controller.addStudent);
 };

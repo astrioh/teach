@@ -27,6 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 require('./routes/auth.routes')(app);
 require('./routes/teachers.routes')(app);
 require('./routes/students.routes')(app);
+require('./routes/lessons.routes')(app);
 app.use(
   '/peerjs',
   require('peer').ExpressPeerServer(server, {
@@ -62,30 +63,45 @@ const Role = db.role;
 db.sequelize.sync();
 
 function initial() {
-  // Role.create({
-  //   id: ROLES.STUDENT,
-  //   name: 'Ученик',
-  // });
-
-  // Role.create({
-  //   id: ROLES.TEACHER,
-  //   name: 'Репетитор',
-  // });
-
-  // db.user
-  //   .create({
-  //     fullName: 'Буцких Илья Александрович',
-  //     email: 'Email',
-  //     password: bcrypt.hashSync('111111', 8),
-  //     bio: '',
-  //   })
-  //   .then((user) => {
-  //     Role.findAll().then((roles) => {
-  //       user.setRole(roles[0]);
-  //     });
-  //   });
-  db.teachersStudents.create({
-    studentId: 4,
-    teacherId: 3,
+  Role.create({
+    id: ROLES.STUDENT,
+    name: 'Ученик',
   });
+
+  Role.create({
+    id: ROLES.TEACHER,
+    name: 'Репетитор',
+  });
+
+  db.user.create({
+    fullName: 'Занятиев Репетитор Календарович',
+    email: 'teacher@mail.ru',
+    password: bcrypt.hashSync('teacher', 8),
+    bio: 'Преподаю и изучаю',
+    roleId: ROLES.TEACHER,
+  });
+
+  db.user.create({
+    fullName: 'Отличников Ученик Школьникович',
+    email: 'student@mail.ru',
+    password: bcrypt.hashSync('student', 8),
+    bio: '',
+    roleId: ROLES.STUDENT,
+  });
+
+  db.lesson
+    .create({
+      name: 'Химия',
+      startDate: '1995-12-17 03:24:00',
+      endDate: '1995-12-17 05:35:00',
+      userId: 1,
+    })
+    .then((lesson) => {
+      [2].forEach((studentId) => {
+        db.studentsLessons.create({
+          lessonId: lesson.id,
+          studentId: studentId,
+        });
+      });
+    });
 }
