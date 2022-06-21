@@ -33,7 +33,7 @@ const StudentsPage = () => {
       <Heading>Ученики</Heading>
       <Flex justifyContent='space-between' marginTop='30px' width='100%'>
         <Box width='510px'>
-          <SearchBar />
+          <SearchBar placeholder='Введите ФИО или номер ученика' />
         </Box>
         <Button
           colorScheme={COLORS.DEFAULT_COLOR_SCHEME}

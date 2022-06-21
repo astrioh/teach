@@ -33,7 +33,7 @@ const AddStudentPage = () => {
       <Heading>Добавить ученика</Heading>
       <Flex justifyContent='space-between' marginTop='30px' width='100%'>
         <Box width='510px'>
-          <SearchBar />
+          <SearchBar placeholder='Введите ФИО или номер ученика' />
         </Box>
       </Flex>
 

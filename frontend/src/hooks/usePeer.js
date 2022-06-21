@@ -51,10 +51,8 @@ function usePeer(addRemoteStream, removeRemoteStream) {
       navigator.mediaDevices
         .getUserMedia(userMediaConfig)
         .then((stream) => {
-          // Answer the call with an A/V stream.
           call.answer(stream);
 
-          // Play the remote stream
           call.on('stream', (remoteStream) => {
             addRemoteStream(remoteStream, call.peer);
           });

@@ -21,7 +21,7 @@ import students from '../api/students';
 import { COLORS } from '../constants';
 import CircleCheckbox from './CircleCheckbox';
 
-const AddLessonStudents = ({ addedStudents, addStudentsToLesson }) => {
+const AddLessonStudents = ({ addedStudents = [], addStudentsToLesson }) => {
   const [studentsToAdd, setStudentsToAdd] = useState([]);
 
   useEffect(() => {

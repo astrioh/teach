@@ -10,27 +10,35 @@ const useSocket = () => {
   const [connectedPeers, setConnectedPeers] = useState([]);
 
   useEffect(() => {
-    const newSocket = io(socketURL);
-    console.log(socket, newSocket);
-    setSocket(newSocket);
-    newSocket.on('connect', () => {
-      console.log('connected');
-    });
+    setSocket(io(socketURL));
+  }, []);
 
-    newSocket.on('disconnect', () => {
-      console.log('disconnected');
-      cleanUp();
-    });
+  useEffect(() => {
+    if (socket) {
+      socket.on('connect', () => {
+        console.log('connected');
+      });
 
-    newSocket.on('allMembers', (peersData) => {
-      setConnectedPeers(peersData);
-    });
+      socket.on('disconnect', () => {
+        console.log('disconnected');
+        cleanUp();
+      });
 
-    newSocket.on('updateMembers', () => {
-      newSocket.emit('allMembers');
-    });
-    return () => newSocket.close();
-  }, [setSocket]);
+      socket.on('allMembers', (peersData) => {
+        setConnectedPeers(peersData);
+      });
+
+      socket.on('updateMembers', () => {
+        socket.emit('getPeers');
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.close();
+      }
+    };
+  }, [socket]);
 
   const cleanUp = () => {
     setConnectedPeers([]);

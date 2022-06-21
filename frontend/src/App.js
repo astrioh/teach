@@ -65,9 +65,9 @@ function App() {
               </RequireAuth>
             }
           />
-          <Route exact path='/room/:roomId' element={<RoomPage />} />
         </Route>
       </Route>
+      <Route exact path='/room/:roomId' element={<RoomPage />} />
       <Route path='*' element={<Navigate to='/lessons' replace />} />
     </Routes>
   );

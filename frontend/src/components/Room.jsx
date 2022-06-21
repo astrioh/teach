@@ -1,18 +1,27 @@
-import { Box, Center, Flex, Icon } from '@chakra-ui/react';
+import {
+  Avatar,
+  Box,
+  Center,
+  Flex,
+  HStack,
+  Icon,
+  IconButton,
+} from '@chakra-ui/react';
 import {
   BsFillCameraVideoFill,
   BsFillCameraVideoOffFill,
   BsFillMicFill,
   BsFillMicMuteFill,
+  BsFillTelephoneXFill,
 } from 'react-icons/bs';
 import React, { useState, useEffect, useRef } from 'react';
 
 import useAuth from '../hooks/useAuth';
-import useSocket from '../hooks/useSocket';
 import usePeer from '../hooks/usePeer';
 import useLocalMedia from '../hooks/useLocalMedia';
 import useRemoteStreams from '../hooks/useRemoteStreams';
 import useStream from '../hooks/useStream';
+import BackButton from './BackButton';
 
 const Room = ({ roomId, socket, connectedPeers, connect, disconnect }) => {
   console.log('rerender');
@@ -29,6 +38,16 @@ const Room = ({ roomId, socket, connectedPeers, connect, disconnect }) => {
   const [isConnected, setConnected] = useState(false);
   console.log(1234);
 
+  const toggleAudio = () => {
+    localMedia.getAudioTracks()[0].enabled = !isAudioEnabled;
+    setIsAudioEnabled(!isAudioEnabled);
+  };
+
+  const toggleVideo = () => {
+    localMedia.getVideoTracks()[0].enabled = !isVideoEnabled;
+    setIsVideoEnabled(!isVideoEnabled);
+  };
+
   const hangUp = async () => {
     setConnected(false);
     disconnect(myPeerId);
@@ -37,8 +56,12 @@ const Room = ({ roomId, socket, connectedPeers, connect, disconnect }) => {
     });
   };
 
-  const call = (remoteid) => {
-    let call = myPeer.call(remoteid, localMedia);
+  const call = (remoteId) => {
+    if (peersOnline.includes(remoteId)) {
+      return;
+    }
+
+    let call = myPeer.call(remoteId, localMedia);
     console.log('call');
 
     call.on('stream', (remoteStream) => {
@@ -82,7 +105,11 @@ const Room = ({ roomId, socket, connectedPeers, connect, disconnect }) => {
   }, [connectedPeers, myPeerId]);
 
   useEffect(() => {
-    if (localMedia) setLocalStream(localMedia);
+    if (localMedia) {
+      setLocalStream(localMedia);
+      // localMedia.getAudioTracks()[0].enabled = isAudioEnabled;
+      // localMedia.getVideoTracks()[0].enabled = isVideoEnabled;
+    }
   }, [localMedia]);
 
   const refsArray = useRef([]);
@@ -94,54 +121,113 @@ const Room = ({ roomId, socket, connectedPeers, connect, disconnect }) => {
   }, [remoteStreams]);
 
   return (
-    <Flex height='100vh' width='100%' bgColor='blue' flexDirection={'column'}>
-      <Center flex={1}>
-        <div style={{ marginRight: '5px' }}>
+    <Flex
+      width='100%'
+      height='100vh'
+      padding='50px 150px'
+      bgColor='#0D2426'
+      flexDirection='column'
+      alignItems='flex-start'
+    >
+      <BackButton
+        size='lg'
+        to='/lessons'
+        marginBottom='20px'
+        opacity='0.6'
+        _hover={{ opacity: 1 }}
+      />
+      <HStack justifyContent='center' flex={1} w='100%' spacing='15px'>
+        {isVideoEnabled || true ? (
           <video
             onContextMenu={(event) => event.preventDefault()}
             ref={localVideoRef}
             onCanPlay={handleCanPlayLocal}
             autoPlay
+            style={{
+              transform: 'scaleX(-1)',
+              minHeight: '480px',
+              maxWidth: '850px',
+              flex: '1',
+            }}
             playsInline
             muted
           />
-        </div>
+        ) : (
+          <Center bgColor='black' minHeight='480px' maxWidth='850px' flex='1'>
+            <Avatar name='' />
+          </Center>
+        )}
 
         {remoteStreams.map((dataStream, i, arr) => (
-          <div>
-            <video
-              key={dataStream.peerId}
-              onContextMenu={(event) => event.preventDefault()}
-              ref={(ref) => (refsArray.current[dataStream.peerId] = ref)}
-              autoPlay
-              playsInline
-            />
-          </div>
+          <video
+            key={dataStream.peerId}
+            onContextMenu={(event) => event.preventDefault()}
+            ref={(ref) => (refsArray.current[dataStream.peerId] = ref)}
+            style={{
+              transform: 'scaleX(-1)',
+              minHeight: '480px',
+              maxWidth: '850px',
+              flex: '1',
+            }}
+            autoPlay
+            playsInline
+          />
         ))}
-      </Center>
-      <Flex
-        position={'sticky'}
+      </HStack>
+      <HStack
+        position='sticky'
         bottom='0'
-        justifyContent={'center'}
-        padding={15}
+        justifyContent='center'
+        width='100%'
+        spacing='15px'
       >
-        <Icon
-          color={'white'}
-          onClick={() => setIsAudioEnabled(!isAudioEnabled)}
-          w={16}
-          h={16}
-          as={isAudioEnabled ? BsFillMicFill : BsFillMicMuteFill}
-          cursor='pointer'
+        <IconButton
+          width={12}
+          height={12}
+          padding='0'
+          color={isAudioEnabled ? 'white' : 'red'}
+          variant='ghost'
+          _hover=''
+          onClick={toggleAudio}
+          icon={
+            <Icon
+              as={isAudioEnabled ? BsFillMicFill : BsFillMicMuteFill}
+              width='100%'
+              height='100%'
+            />
+          }
         />
-        <Icon
-          color={'white'}
-          onClick={() => setIsVideoEnabled(!isVideoEnabled)}
-          w={16}
-          h={16}
-          as={isVideoEnabled ? BsFillCameraVideoFill : BsFillCameraVideoOffFill}
-          cursor='pointer'
+        <IconButton
+          width={12}
+          height={12}
+          padding='0'
+          color={isVideoEnabled ? 'white' : 'red'}
+          variant='ghost'
+          _hover=''
+          onClick={toggleVideo}
+          icon={
+            <Icon
+              as={
+                isVideoEnabled
+                  ? BsFillCameraVideoFill
+                  : BsFillCameraVideoOffFill
+              }
+              width='100%'
+              height='100%'
+            />
+          }
         />
-      </Flex>
+        <IconButton
+          width={12}
+          height={12}
+          padding='0'
+          color='red'
+          variant='ghost'
+          _hover=''
+          onClick={toggleVideo}
+          icon={<Icon as={BsFillTelephoneXFill} width='100%' height='100%' />}
+        />
+      </HStack>
     </Flex>
   );
 };

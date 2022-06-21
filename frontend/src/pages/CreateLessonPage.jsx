@@ -175,22 +175,38 @@ const CreateLessonPage = () => {
             </RadioGroup>
           </FormControl>
           {inputs.recurrence === LESSON_RECURRENCE.EVERY_WEEK && (
-            <FormControl mt='16px'>
-              <FormLabel htmlFor='recurrenceDate'>
-                Повторять каждую неделю до
-              </FormLabel>
-              <DatePicker
-                id='recurrenceDate'
-                name='recurrenceDate'
-                required
-                selected={inputs.recurrenceDate}
-                dateFormat='dd.MM.yyyy'
-                customInput={<Input />}
-                onChange={(value) =>
-                  handleComponentInputChange('recurrenceDate', value)
-                }
-              />
-            </FormControl>
+            <>
+              <FormControl mt='16px'>
+                <FormLabel htmlFor='recurrenceDate'>Интервал</FormLabel>
+                <DatePicker
+                  id='recurrenceDate'
+                  name='recurrenceDate'
+                  required
+                  selected={inputs.recurrenceDate}
+                  dateFormat='dd.MM.yyyy'
+                  customInput={<Input />}
+                  onChange={(value) =>
+                    handleComponentInputChange('recurrenceDate', value)
+                  }
+                />
+              </FormControl>
+              <FormControl mt='16px'>
+                <FormLabel htmlFor='recurrenceDate'>
+                  Повторять каждую неделю до
+                </FormLabel>
+                <DatePicker
+                  id='recurrenceDate'
+                  name='recurrenceDate'
+                  required
+                  selected={inputs.recurrenceDate}
+                  dateFormat='dd.MM.yyyy'
+                  customInput={<Input />}
+                  onChange={(value) =>
+                    handleComponentInputChange('recurrenceDate', value)
+                  }
+                />
+              </FormControl>
+            </>
           )}
           <Button
             colorScheme={COLORS.DEFAULT_COLOR_SCHEME}

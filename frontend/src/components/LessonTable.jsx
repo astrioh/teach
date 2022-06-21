@@ -20,9 +20,9 @@ const LessonTable = ({ lessons }) => {
         <Thead>
           <Tr>
             <Th>Название</Th>
-            <Th>Количество участников</Th>
             <Th>Дата</Th>
             <Th>Время</Th>
+            <Th>Количество участников</Th>
             <Th></Th>
           </Tr>
         </Thead>
@@ -37,11 +37,11 @@ const LessonTable = ({ lessons }) => {
             return (
               <Tr key={lesson.id}>
                 <Td>{lesson.name}</Td>
-                <Td>{lesson.students.length}</Td>
                 <Td>{moment(lesson.date).format(DEFAULT_DATE_FORMAT)}</Td>
                 <Td>
                   {startTime.format('HH:mm')} &#8211; {endTime.format('HH:mm')}
                 </Td>
+                <Td>{lesson.students.length}</Td>
                 <Td>
                   {didStart && (
                     <Link to={`/room/${lesson.id}`}>

@@ -1,5 +1,8 @@
-import { Box, VStack } from '@chakra-ui/react';
+import { Box, Icon, VStack } from '@chakra-ui/react';
 import React from 'react';
+import { BsFillCalendar2WeekFill, BsPeopleFill } from 'react-icons/bs';
+import { GoMortarBoard } from 'react-icons/go';
+import { IoJournal } from 'react-icons/io5';
 import { NavLink } from 'react-router-dom';
 import { COLORS, ROLES } from '../../constants';
 import useAuth from '../../hooks/useAuth';
@@ -11,31 +14,31 @@ const Navbar = () => {
     {
       name: 'Ученики',
       path: '/students',
-      icon: '',
+      icon: BsPeopleFill,
       roles: [ROLES.TEACHER],
     },
     {
       name: 'Репетиторы',
       path: '/teachers',
-      icon: '',
+      icon: BsPeopleFill,
       roles: [ROLES.STUDENT],
     },
     {
       name: 'Занятия',
       path: '/lessons',
-      icon: '',
+      icon: GoMortarBoard,
       roles: [ROLES.TEACHER, ROLES.STUDENT],
     },
     {
       name: 'Календарь',
       path: '/calendar',
-      icon: '',
+      icon: BsFillCalendar2WeekFill,
       roles: [ROLES.TEACHER, ROLES.STUDENT],
     },
     {
       name: 'Задания',
       path: '/assignments',
-      icon: '',
+      icon: IoJournal,
       roles: [ROLES.TEACHER, ROLES.STUDENT],
     },
   ];
@@ -76,6 +79,7 @@ const Navbar = () => {
                 }}
                 to={navUrl.path}
               >
+                <Icon w='7' h='7' marginRight='15px' as={navUrl.icon} />
                 {navUrl.name}
               </NavLink>
             </Box>
