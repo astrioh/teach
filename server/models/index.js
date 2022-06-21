@@ -81,4 +81,33 @@ db.lesson.belongsToMany(db.user, {
   onDelete: 'CASCADE',
 });
 
+/**
+ * Задания
+ */
+
+db.assignment = require('./assignment.model.js')(sequelize, Sequelize);
+db.user.hasMany(db.assignment);
+db.assignment.belongsTo(db.user, {
+  foreignKey: 'teacherId',
+  as: 'teacher',
+  onDelete: 'CASCADE',
+});
+
+db.assignmentsStudents = require('./assignments_students.model.js')(
+  sequelize,
+  Sequelize,
+);
+db.user.belongsToMany(db.lesson, {
+  through: db.assignmentsStudents,
+  foreignKey: 'studentId',
+  as: 'assignment',
+  onDelete: 'CASCADE',
+});
+db.assignment.belongsToMany(db.user, {
+  through: db.assignmentsStudents,
+  foreignKey: 'assignmentId',
+  as: 'students',
+  onDelete: 'CASCADE',
+});
+
 module.exports = db;

@@ -10,7 +10,8 @@ module.exports = function (io, socket) {
     socket.join(user.room);
     socket.peerID = peerID;
 
-    console.log(user);
+    console.log('joined', user);
+    console.log('users', users);
     let allMembersInRoom = users
       .filter((user) => user.room === room)
       .map((user) => user.peerID);
@@ -41,7 +42,7 @@ module.exports = function (io, socket) {
     }
   });
 
-  socket.on('getPeers', ({ peerId }) => {
+  socket.on('peerClosed', ({ peerId }) => {
     if (peerId) {
       userPeers = userPeers.filter((id) => id !== peerId);
       socket.peerID = null;
@@ -61,12 +62,12 @@ module.exports = function (io, socket) {
     }
   });
 
-  socket.on('peerClosed', ({ room }) => {
+  socket.on('getMembers', ({ room }) => {
     console.log(room);
     let peers = users
       .filter((user) => user.room === room)
       .map((user) => user.peerId);
 
-    io.to(room).emit('sendPeers', peers);
+    io.to(room).emit('allMembers', peers);
   });
 };

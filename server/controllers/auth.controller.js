@@ -7,13 +7,24 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 exports.signUp = (req, res) => {
-  User.create({
-    fullName: req.body.fullName,
-    email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8),
-    bio: req.body.bio || null,
-    roleId: req.body.roleId,
+  User.findOne({
+    where: {
+      email: req.body.email,
+    },
   })
+    .then((user) => {
+      if (user) {
+        res.status(500).send({ message: 'User already exists' });
+        return;
+      }
+      return User.create({
+        fullName: req.body.fullName,
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password, 8),
+        bio: req.body.bio || null,
+        roleId: req.body.roleId,
+      });
+    })
     .then((user) => {
       user.getRole().then((role) => {
         let token = jwt.sign({ id: user.id }, config.secret, {
